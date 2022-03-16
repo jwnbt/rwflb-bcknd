@@ -13,7 +13,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/goals", (req, res) => {
-  res.send({ name: "workout", done: false, date: null });
+  res.send("hello world");
 });
 
 app.listen(PORT, () => {
