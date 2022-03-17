@@ -33,7 +33,11 @@ app.post("/goals/:userName", bodyParser.json(), (req, res) => {
     if (credAreMatch) {
       return res.send({ hasAccess: true });
     } else {
-      return res.send([{ hasAccess: false }, parsedData, req.body]);
+      return res.send([
+        { hasAccess: false },
+        parsedData,
+        JSON.stringify(req.body),
+      ]);
     }
   }
 });
