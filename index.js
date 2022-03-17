@@ -30,6 +30,7 @@ app.post("/goals/:userName", bodyParser.json(), (req, res) => {
     const credAreMatch =
       req.body.username === parsedData.username &&
       req.body.password === parsedData.password;
+    console.log(req.body);
     if (credAreMatch) {
       return res.send({ hasAccess: true });
     } else {
