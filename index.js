@@ -9,13 +9,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send("nothing here");
+  fs.writeFileSync("./req.json", JSON.stringify(req), "utf-8");
+  res.send("req");
 });
 
 app.get("/goals", (req, res) => {
   const data = fs.readFileSync("./data.json");
   const goals = JSON.parse(data);
-  res.send(goals[1]);
+  res.send(goals);
 });
 
 app.post("/goals/:userName", bodyParser.json(), (req, res) => {
