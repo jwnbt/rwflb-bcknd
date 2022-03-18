@@ -49,7 +49,7 @@ app.patch("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log(`goal updated: ${req.body}`);
+      console.log(`goal updated: ${JSON.stringify(req.body)}`);
     });
   });
   res.send("goal updated");
@@ -67,7 +67,7 @@ app.delete("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log(`goal deleted: ${req.body}`);
+      console.log(`goal deleted: ${JSON.stringify(req.body)}`);
     });
   });
 });
