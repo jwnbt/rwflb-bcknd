@@ -1,7 +1,1 @@
-[
-  { "name": "workout", "done": false, "date": null },
-  { "name": "study", "done": false, "date": null },
-  { "name": "work", "done": false, "date": null },
-  { "name": "read", "done": false, "date": null },
-  { "name": "sleep", "done": false, "date": null }
-]
+[{ "name": "work", "done": false, "data": null }]
