@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 app.get("/goals", (req, res) => {
   fs.readFile("./data.json", "utf-8", (err, goals) => {
     if (err) throw err;
+    console.log(`Goals Requested`);
     res.send(goals);
   });
 });
@@ -25,18 +26,18 @@ app.put("/goals", bodyParserJSON, (req, res) => {
     if (err) throw err;
     const parsedData = JSON.parse(data);
     const nextPkey = parsedData.length + 1;
-    const dataToWrite = [...parsedData, { pkey: nextPkey, ...req.body }];
+    const goalToAdd = { pkey: nextPkey, ...req.body };
+    const dataToWrite = [...parsedData, goalToAdd];
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log("data added");
+      console.log(`goal added: ${goalToAdd}`);
     });
   });
   res.send("goal added");
 });
 
 app.patch("/goals", bodyParserJSON, (req, res) => {
-  console.log(req.body);
   fs.readFile(dataFilePath, "utf-8", (err, data) => {
     if (err) throw err;
     const parsedData = JSON.parse(data);
@@ -48,10 +49,27 @@ app.patch("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log("data updated");
+      console.log(`goal updated: ${parsedData[goalToUpdIndex]}`);
     });
   });
   res.send("goal updated");
+});
+
+app.delete("/goals", bodyParserJSON, (req, res) => {
+  fs.readFile(dataFilePath, "utf-8", (err, data) => {
+    if (err) throw err;
+    const parsedData = JSON.parse(data);
+    const goalToDelIndex = parsedData.findIndex(
+      (goal) => goal.pkey === req.body.pkey
+    );
+    parsedData.splice(goalToDelIndex, 1);
+    const dataToWrite = [...parsedData];
+    const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
+    fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
+      if (err) throw err;
+      console.log(`goal deleted: ${parsedData[goalToDelIndex]}`);
+    });
+  });
 });
 
 app.listen(PORT, () => {
