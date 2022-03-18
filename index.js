@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 1000;
 const bodyParserJSON = bodyParser.json();
 const dataFilePath = "./data.json";
 
-app.use(cors({ origin: "https://wonderful-lovelace-495196.netlify.app" }));
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send({ msg: "welcome" });
