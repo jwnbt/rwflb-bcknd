@@ -31,7 +31,7 @@ app.put("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log(`goal added: ${goalToAdd}`);
+      console.log(`goal added: ${JSON.stringify(goalToAdd)}`);
     });
   });
   res.send("goal added");
@@ -49,7 +49,7 @@ app.patch("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log(`goal updated: ${parsedData[goalToUpdIndex]}`);
+      console.log(`goal updated: ${req.body}`);
     });
   });
   res.send("goal updated");
@@ -67,7 +67,7 @@ app.delete("/goals", bodyParserJSON, (req, res) => {
     const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
     fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
       if (err) throw err;
-      console.log(`goal deleted: ${parsedData[goalToDelIndex]}`);
+      console.log(`goal deleted: ${req.body}`);
     });
   });
 });
