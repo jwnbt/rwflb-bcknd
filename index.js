@@ -1,47 +1,57 @@
 const fs = require("fs");
-const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 1000;
+const bodyParserJSON = bodyParser.json();
+const dataFilePath = "./data.json";
 
 app.use(cors());
 
 app.get("/", (req, res) => {
-  fs.writeFileSync("./req.json", JSON.stringify(req), "utf-8");
-  res.send("req");
+  res.send({ msg: "welcome" });
 });
 
 app.get("/goals", (req, res) => {
-  const data = fs.readFileSync("./data.json");
-  const goals = JSON.parse(data);
-  res.send(goals);
+  fs.readFile("./data.json", "utf-8", (err, goals) => {
+    if (err) throw err;
+    res.send(goals);
+  });
 });
 
-app.post("/goals/:userName", bodyParser.json(), (req, res) => {
-  const userFolderPath = path.join("./app-data/users", req.params.userName);
-  const userDirExists = fs.existsSync(userFolderPath);
-  console.log("in");
-  console.log(userDirExists);
-  if (userDirExists) {
-    const userCredPath = path.join(userFolderPath, "cred.json");
-    const data = fs.readFileSync(userCredPath, "utf-8");
+app.put("/goals", bodyParserJSON, (req, res) => {
+  fs.readFile(dataFilePath, "utf-8", (err, data) => {
+    if (err) throw err;
     const parsedData = JSON.parse(data);
-    const credAreMatch =
-      req.body.username === parsedData.username &&
-      req.body.password === parsedData.password;
-    console.log(req.body);
-    if (credAreMatch) {
-      return res.send({ hasAccess: true });
-    } else {
-      return res.send([
-        { hasAccess: false },
-        parsedData,
-        JSON.stringify(req.body),
-      ]);
-    }
-  }
+    const nextPkey = parsedData.length + 1;
+    const dataToWrite = [...parsedData, { pkey: nextPkey, ...req.body }];
+    const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
+    fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
+      if (err) throw err;
+      console.log("data added");
+    });
+  });
+  res.send("goal added");
+});
+
+app.patch("/goals", bodyParserJSON, (req, res) => {
+  console.log(req.body);
+  fs.readFile(dataFilePath, "utf-8", (err, data) => {
+    if (err) throw err;
+    const parsedData = JSON.parse(data);
+    const goalToUpdIndex = parsedData.findIndex(
+      (goal) => goal.pkey === req.body.pkey
+    );
+    parsedData.splice(goalToUpdIndex, 1, req.body);
+    const dataToWrite = [...parsedData];
+    const dataToWriteJSON = JSON.stringify(dataToWrite, null, 2);
+    fs.writeFile(dataFilePath, dataToWriteJSON, (err) => {
+      if (err) throw err;
+      console.log("data updated");
+    });
+  });
+  res.send("goal updated");
 });
 
 app.listen(PORT, () => {
